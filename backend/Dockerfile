@@ -34,6 +34,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.medusa ./.medusa
 # Wildcard copy to handle .js or .ts config
 COPY --from=builder /app/medusa-config.* ./
+COPY --from=builder /app/tsconfig.json ./
 COPY --from=builder /app/package.json ./
 
 # Runtime Env Vars
