@@ -43,4 +43,4 @@ ENV PORT=9000
 ENV NODE_OPTIONS="--experimental-specifier-resolution=node"
 
 EXPOSE 9000
-CMD ["tail", "-f", "/dev/null"]
+CMD ["pnpm", "start"]
