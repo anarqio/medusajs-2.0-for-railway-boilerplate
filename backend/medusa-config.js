@@ -60,6 +60,8 @@ const medusaConfig = {
             id: 'minio',
             options: {
               endPoint: MINIO_ENDPOINT,
+              port: 9000,
+              useSSL: false,
               accessKey: MINIO_ACCESS_KEY,
               secretKey: MINIO_SECRET_KEY,
               bucket: MINIO_BUCKET // Optional, default: medusa-media
