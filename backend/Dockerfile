@@ -36,10 +36,11 @@ COPY --from=builder /app/.medusa ./.medusa
 COPY --from=builder /app/medusa-config.* ./
 COPY --from=builder /app/tsconfig.json ./
 COPY --from=builder /app/package.json ./
+COPY --from=builder /app/src ./src
 
 # Runtime Env Vars
 ENV PORT=9000
 ENV NODE_OPTIONS="--experimental-specifier-resolution=node"
 
 EXPOSE 9000
-CMD ["pnpm", "start"]
+CMD ["tail", "-f", "/dev/null"]
