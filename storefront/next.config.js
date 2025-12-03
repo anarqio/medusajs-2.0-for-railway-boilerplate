@@ -32,6 +32,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "medusa-public-images.s3.eu-west-1.amazonaws.com",
       },
+      {
+        protocol: "https",
+        hostname: "minio-tw808sk8kooc0kgk8og0880s.72.62.44.116.sslip.io", // <--- ADD THIS
+      },
       { // Note: can be removed after deleting demo products
         protocol: "https",
         hostname: "medusa-server-testing.s3.amazonaws.com",
