@@ -21,6 +21,9 @@ interface MinioServiceConfig {
   accessKey: string
   secretKey: string
   bucket?: string
+  publicUrl?: string
+  port?: number
+  useSSL?: boolean
 }
 
 export interface MinioFileProviderOptions {
@@ -28,6 +31,9 @@ export interface MinioFileProviderOptions {
   accessKey: string
   secretKey: string
   bucket?: string
+  publicUrl?: string
+  port?: number
+  useSSL?: boolean
 }
 
 const DEFAULT_BUCKET = 'medusa-media'
@@ -49,18 +55,23 @@ class MinioFileProviderService extends AbstractFileProviderService {
       endPoint: options.endPoint,
       accessKey: options.accessKey,
       secretKey: options.secretKey,
-      bucket: options.bucket
+      bucket: options.bucket,
+      publicUrl: options.publicUrl,
+      port: options.port,
+      useSSL: options.useSSL
     }
 
     // Use provided bucket or default
     this.bucket = this.config_.bucket || DEFAULT_BUCKET
     this.logger_.info(`MinIO service initialized with bucket: ${this.bucket}`)
 
-    // Initialize Minio client with hardcoded SSL settings
+    // Initialize Minio client with DYNAMIC settings (Fixes the 443 error)
     this.client = new Client({
       endPoint: this.config_.endPoint,
-      port: 9000,
-      useSSL: false,
+      // Use configured port or default to 9000
+      port: this.config_.port ? Number(this.config_.port) : 9000,
+      // Use configured SSL setting or default to false
+      useSSL: this.config_.useSSL !== undefined ? this.config_.useSSL : false,
       accessKey: this.config_.accessKey,
       secretKey: this.config_.secretKey
     })
@@ -178,8 +189,21 @@ class MinioFileProviderService extends AbstractFileProviderService {
         }
       )
 
-      // Generate URL using the endpoint and bucket
-      const url = `https://${this.config_.endPoint}/${this.bucket}/${fileKey}`
+      // Generate URL using publicUrl if available, otherwise fallback to endpoint
+      let url: string;
+      if (this.config_.publicUrl) {
+        // Remove trailing slash if present
+        const baseUrl = this.config_.publicUrl.replace(/\/$/, "");
+        url = `${baseUrl}/${this.bucket}/${fileKey}`;
+      } else {
+        // Fallback: Construct from endpoint (Internal IP logic)
+        const protocol = this.config_.useSSL ? 'https' : 'http';
+        // Add port if explicitly set and not standard
+        const portSuffix = (this.config_.port && ![80, 443].includes(Number(this.config_.port))) 
+          ? `:${this.config_.port}` 
+          : '';
+        url = `${protocol}://${this.config_.endPoint}${portSuffix}/${this.bucket}/${fileKey}`;
+      }
 
       this.logger_.info(`Successfully uploaded file ${fileKey} to MinIO bucket ${this.bucket}`)
 

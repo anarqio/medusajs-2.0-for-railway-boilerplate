@@ -21,7 +21,8 @@ import {
   MINIO_SECRET_KEY,
   MINIO_BUCKET,
   MEILISEARCH_HOST,
-  MEILISEARCH_ADMIN_KEY
+  MEILISEARCH_ADMIN_KEY,
+  MINIO_PUBLIC_URL
 } from 'lib/constants';
 
 loadEnv(process.env.NODE_ENV, process.cwd());
@@ -60,6 +61,7 @@ const medusaConfig = {
             id: 'minio',
             options: {
               endPoint: MINIO_ENDPOINT,
+              publicUrl: MINIO_PUBLIC_URL,
               port: 9000,
               useSSL: false,
               accessKey: MINIO_ACCESS_KEY,
