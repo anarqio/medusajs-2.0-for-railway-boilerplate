@@ -59,8 +59,8 @@ class MinioFileProviderService extends AbstractFileProviderService {
     // Initialize Minio client with hardcoded SSL settings
     this.client = new Client({
       endPoint: this.config_.endPoint,
-      port: 443,
-      useSSL: true,
+      port: 9000,
+      useSSL: false,
       accessKey: this.config_.accessKey,
       secretKey: this.config_.secretKey
     })
